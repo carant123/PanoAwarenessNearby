@@ -27,130 +27,57 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.huawei.hms.panorama.Panorama
 import com.huawei.hms.panorama.PanoramaInterface
+import com.huawei.panoramawarenessnearby.BaseActivity
 import com.huawei.panoramawarenessnearby.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainPanoramaActivity : AppCompatActivity() {
+class MainPanoramaActivity : BaseActivity() {
 
     companion object {
         private const val TAG: String = "MainActivity"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        inicializar()
+    override fun getLayout(): Int = R.layout.activity_main
+
+    override fun inicializar() {
+        verificarPermisos()
+        inicializarBotones()
     }
 
-    /**
-     * initialzing the view hear
-     *
-     * switch case will be a better implementation
-     */
-    private fun inicializar() {
-        loadImageInfo.setOnClickListener {
+    private fun inicializarBotones() {
+        loadImageInfo?.setOnClickListener {
             panoramaInterfaceLoadImageInfo()
         }
+
         loadImageInfoWithType.setOnClickListener {
             panoramaInterfaceLoadImageInfoWithType()
         }
+
         localInterface.setOnClickListener {
-            panoramaInterfaceLocalInterface()
+            var intent = Intent(this, LocalInterfaceActivity::class.java).apply {
+                data = returnResource(R.raw.pano)
+                putExtra("PanoramaType", PanoramaInterface.IMAGE_TYPE_RING)
+            }
+            startActivity(intent)
         }
-        requestPermission()
+
     }
 
+    private fun panoramaInterfaceLoadImageInfoWithType() {
+        Panorama.getInstance().loadImageInfoWithPermission(this,
+            returnResource(R.raw.pano2), PanoramaInterface.IMAGE_TYPE_RING)
+            .setResultCallback(ResultCallbackImpl(this))
 
-    /**
-     * Panoroma kit with local interface
-     *
-     * getResource for loading the raw images
-     */
-    private fun panoramaInterfaceLocalInterface() {
-        val intent = Intent(this@MainPanoramaActivity, LocalInterfaceActivity::class.java)
-        intent.apply {
-            data = returnResource(R.raw.pano)
-            putExtra("PanoramaType", PanoramaInterface.IMAGE_TYPE_SPHERICAL)
-        }
-        startActivity(intent)
     }
-
-    /**
-     * request permission for the application
-     */
-    private fun requestPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                1
-            )
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1
-            )
-        } else {
-            Log.i(TAG, "permission ok")
-        }
-    }
-
-    /**
-     * Loading the panoroma Image Information
-     */
 
     private fun panoramaInterfaceLoadImageInfo() {
         Panorama.getInstance().loadImageInfoWithPermission(this, returnResource(R.raw.pano))
-            .setResultCallback(
-                ResultCallbackImpl(
-                    this@MainPanoramaActivity
-                )
-            )
-    }
-
-    /**
-     * Loading the panoroma Image Information with information
-     */
-
-    private fun panoramaInterfaceLoadImageInfoWithType() {
-        Panorama.getInstance()
-            .loadImageInfoWithPermission(
-                this,
-                returnResource(R.raw.pano2),
-                PanoramaInterface.IMAGE_TYPE_RING
-            )
-            .setResultCallback(
-                ResultCallbackImpl(
-                    this@MainPanoramaActivity
-                )
-            )
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+            .setResultCallback(ResultCallbackImpl(this))
     }
 
     private fun returnResource(drawable: Int): Uri {
         return Uri.parse("android.resource://$packageName/$drawable")
     }
-
 
 }

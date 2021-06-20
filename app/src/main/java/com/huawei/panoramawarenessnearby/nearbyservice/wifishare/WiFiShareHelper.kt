@@ -15,7 +15,7 @@ import com.huawei.hms.nearby.wifishare.WifiSharePolicy
 import com.huawei.panoramawarenessnearby.R
 import java.util.*
 
-class WiFiShareHelper {
+class WiFiShareHelper : OnItemClickListener {
 
     private val TAG = "Wi-FiShareDemo*Helper"
     private var mContext: Context? = null
@@ -23,6 +23,10 @@ class WiFiShareHelper {
     private var mNearbyDevicesListView: ListView? = null
     private var mAuthCodeTextView: TextView? = null
     private var mWiFiShareEngine: WifiShareEngine? = null
+
+    var mSimpleAdapter: SimpleAdapter? = null
+    var data: MutableList<HashMap<String, Any?>> =
+            ArrayList()
 
     constructor(mContext: Context?) {
         this.mContext = mContext
@@ -102,40 +106,33 @@ class WiFiShareHelper {
         mAuthCodeTextView = textView
     }
 
-    var mSimpleAdapter: SimpleAdapter? = null
-    var data: MutableList<HashMap<String, Any?>> =
-        ArrayList()
-
     /**
      * To show onFound devices, and select a device to share WiFi
      */
     private fun showListView() {
         data.clear()
+
         for ((key, value) in mScanEndpointMap!!) {
-            val item =
-                HashMap<String, Any?>()
+            val item = HashMap<String, Any?>()
             item["id"] = key
             item["name"] = value.name
             data.add(item)
         }
+
         if (mSimpleAdapter == null) {
-            mSimpleAdapter = SimpleAdapter(
-                mContext,
-                data,
-                R.layout.item,
-                arrayOf("id", "name"),
-                intArrayOf(R.id.itemId, R.id.itemName)
-            )
+            mSimpleAdapter = SimpleAdapter(mContext, data, R.layout.item, arrayOf("id", "name"), intArrayOf(R.id.itemId, R.id.itemName))
             mNearbyDevicesListView!!.adapter = mSimpleAdapter
-            mNearbyDevicesListView!!.onItemClickListener =
-                OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-                    val item = mNearbyDevicesListView!!.getItemAtPosition(position) as HashMap<String, Any>
-                    val endpointId = item["id"] as String?
-                    Log.e(TAG, "ListView on click listener Share WiFi to endpoint: $endpointId")
-                    mWiFiShareEngine!!.shareWifiConfig(endpointId)
-                }
+            mNearbyDevicesListView!!.onItemClickListener = this
         } else {
             mSimpleAdapter!!.notifyDataSetChanged()
         }
     }
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val item = mNearbyDevicesListView!!.getItemAtPosition(position) as HashMap<String, Any>
+        val endpointId = item["id"] as String?
+        Log.e(TAG, "ListView on click listener Share WiFi to endpoint: $endpointId")
+        mWiFiShareEngine!!.shareWifiConfig(endpointId)
+    }
+
 }

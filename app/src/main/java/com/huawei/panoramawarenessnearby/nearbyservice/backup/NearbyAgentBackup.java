@@ -66,7 +66,7 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class NearbyAgent {
+public class NearbyAgentBackup {
     private static final String[] REQUIRED_PERMISSIONS =
             new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -77,6 +77,7 @@ public class NearbyAgent {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA};
+
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
     public static final int REQUEST_CODE_SCAN_ONE = 0X01;
 
@@ -102,7 +103,7 @@ public class NearbyAgent {
     private boolean isTransfer = false;
     private Data incomingFile = null;
 
-    public NearbyAgent(Context context) {
+    public NearbyAgentBackup(Context context) {
         mContext = context;
         mDiscoveryEngine = Nearby.getDiscoveryEngine(context);
         mTransferEngine = Nearby.getTransferEngine(context);

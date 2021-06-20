@@ -36,9 +36,10 @@ import java.util.List;
 
 public class FolderMainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
+
     private Button sendBtn;
     private Button recvBtn;
-    private NearbyAgent nearbyAgent;
+    private NearbyAgentBackup nearbyAgent;
     private ImageButton fileTabBtn;
     private ImageButton multiFileTabBtn;
     private List<File> files = new ArrayList<>();
@@ -50,7 +51,7 @@ public class FolderMainActivity extends AppCompatActivity {
 
         sendBtn = (Button)findViewById(R.id.sendBtn);
         recvBtn = (Button)findViewById(R.id.recvBtn);
-        nearbyAgent = new NearbyAgent(this);
+        nearbyAgent = new NearbyAgentBackup(this);
 
         fileTabBtn = (ImageButton)findViewById(R.id.id_tab1_imageview);
         multiFileTabBtn = (ImageButton)findViewById(R.id.id_tab2_imageview);
@@ -106,7 +107,7 @@ public class FolderMainActivity extends AppCompatActivity {
                     nearbyAgent.sendFile(new File(uri.getPath()));
                 }
                 break;
-            case NearbyAgent.REQUEST_CODE_SCAN_ONE:
+            case NearbyAgentBackup.REQUEST_CODE_SCAN_ONE:
                 nearbyAgent.onScanResult(data);
                 break;
             default:

@@ -27,60 +27,59 @@ import com.huawei.hms.panorama.Panorama
 import com.huawei.hms.panorama.PanoramaInterface
 import com.huawei.hms.panorama.PanoramaInterface.PanoramaLocalInterface
 import com.huawei.hms.panorama.PanoramaLocalApi
+import com.huawei.panoramawarenessnearby.BaseActivity
 import com.huawei.panoramawarenessnearby.R
 import kotlinx.android.synthetic.main.activity_local_interface.*
 
-class LocalInterfaceActivity : AppCompatActivity(), View.OnClickListener, OnTouchListener {
-
+class LocalInterfaceActivity : BaseActivity(), OnTouchListener, View.OnClickListener {
 
     private lateinit var mLocalInterface: PanoramaLocalInterface
     private var mChangeButtonCompass = false
-
 
     companion object {
         private const val TAG: String = "LocalInterfaceActivity"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_local_interface)
-        initView()
-    }
+    override fun getLayout(): Int = R.layout.activity_local_interface
 
-    private fun initView() {
+    override fun inicializar() {
         val intent = intent
         val uri = intent.data
-        val type = intent.getIntExtra("PanoramaType", PanoramaInterface.IMAGE_TYPE_SPHERICAL)
+        val type = intent.getIntExtra("PanoramaType", PanoramaInterface.IMAGE_TYPE_RING)
         callLocalApi(uri, type)
     }
 
     private fun callLocalApi(uri: Uri?, type: Int) {
         mLocalInterface = Panorama.getInstance().getLocalInstance(this)
         mLocalInterface.init()
-        if (mLocalInterface.init() == 0 && mLocalInterface.setImage(uri, type) == 0) {
-            val view: View = mLocalInterface.view
+        if(mLocalInterface.init() == 0 && mLocalInterface.setImage(uri,type) == 0){
+            var view: View = mLocalInterface.view
             relativeLayout.addView(view)
 
-            // update MotionEvent to the image.
             view.setOnTouchListener(this@LocalInterfaceActivity)
             changeButton.apply {
                 bringToFront()
                 setOnClickListener(this@LocalInterfaceActivity)
-
             }
         } else {
             Log.e(TAG, "local api error")
         }
-
     }
 
+    private fun returnResource(drawable: Int): Uri {
+        return Uri.parse("android.resource://$packageName/$drawable")
+    }
 
-    /**
-     * write to common function to return the image or the resource file
-     */
-    override fun onClick(v: View?) {
-        if (v?.id == R.id.changeButton) {
-            if (mChangeButtonCompass) {
+    override fun onTouch(p0: View?, event: MotionEvent?): Boolean {
+        mLocalInterface.let {
+            it.updateTouchEvent(event)
+        }
+        return true
+    }
+
+    override fun onClick(view: View?) {
+        if(view?.id == R.id.changeButton) {
+            if(mChangeButtonCompass) {
                 mChangeButtonCompass = false
                 mLocalInterface.setControlMode(PanoramaInterface.CONTROL_TYPE_TOUCH)
                 mLocalInterface.setImage(
@@ -89,25 +88,13 @@ class LocalInterfaceActivity : AppCompatActivity(), View.OnClickListener, OnTouc
                 )
             } else {
                 mChangeButtonCompass = true
-                mLocalInterface.setControlMode(PanoramaInterface.CONTROL_TYPE_POSE)
+                mLocalInterface.setControlMode(PanoramaInterface.CONTROL_TYPE_TOUCH)
                 mLocalInterface.setImage(
                     returnResource(R.raw.pano2),
-                    PanoramaLocalApi.IMAGE_TYPE_SPHERICAL
+                    PanoramaLocalApi.IMAGE_TYPE_RING
                 )
             }
         }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        mLocalInterface.let {
-            mLocalInterface.updateTouchEvent(event)
-        }
-        return true
-    }
-
-    private fun returnResource(drawable: Int): Uri {
-        return Uri.parse("android.resource://$packageName/$drawable")
     }
 
 }

@@ -1,11 +1,10 @@
-package com.huawei.panoramawarenessnearby.nearbyservice.fileshare
+package com.huawei.panoramawarenessnearby.nearbyservice.backup
 
 import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -15,10 +14,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.huawei.hms.hmsscankit.ScanUtil
-import com.huawei.hms.hmsscankit.WriterException
-import com.huawei.hms.ml.scan.HmsBuildBitmapOption
 import com.huawei.hms.ml.scan.HmsScan
-import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.huawei.hms.nearby.Nearby
 import com.huawei.hms.nearby.StatusCode
 import com.huawei.hms.nearby.discovery.*
@@ -27,12 +23,11 @@ import com.huawei.hms.nearby.transfer.DataCallback
 import com.huawei.hms.nearby.transfer.TransferEngine
 import com.huawei.hms.nearby.transfer.TransferStateUpdate
 import com.huawei.panoramawarenessnearby.R
-import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackup
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 
-class NearbyAgent {
+class NearbyAgentBackupK {
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -45,7 +40,10 @@ class NearbyAgent {
         Manifest.permission.CAMERA
     )
     private val REQUEST_CODE_REQUIRED_PERMISSIONS = 1
-    val REQUEST_CODE_SCAN_ONE = 0X01
+
+    companion object {
+        val REQUEST_CODE_SCAN_ONE = 0X01
+    }
 
     private var mContext: Context? = null
     private var mTransferEngine: TransferEngine? = null
@@ -93,34 +91,19 @@ class NearbyAgent {
     }
 
     private fun sendFilesInner() {
-        /* generate bitmap */try {
-            //Generate the barcode.
-            val options = HmsBuildBitmapOption.Creator().setBitmapMargin(1)
-                .setBitmapColor(Color.BLACK)
-                .setBitmapBackgroundColor(Color.WHITE).create()
-            mResultImage =
-                ScanUtil.buildBitmap(mEndpointName, HmsScan.QRCODE_SCAN_TYPE, 700, 700, options)
-            mBarcodeImage!!.visibility = View.VISIBLE
-            mBarcodeImage!!.setImageBitmap(mResultImage)
-        } catch (e: WriterException) {
-            Log.e(TAG, e.toString())
-        }
-        /* start broadcast */
         val advBuilder = BroadcastOption.Builder()
         advBuilder.setPolicy(Policy.POLICY_P2P)
         mDiscoveryEngine!!.startBroadcasting(mEndpointName, mFileServiceId, mConnCbSender, advBuilder.build())
         Log.d(TAG, "Start Broadcasting.")
-        receiveFile()
     }
 
     fun receiveFile() {
         init()
-//        /* scan bitmap */init()
-//        val options = HmsScanAnalyzerOptions.Creator()
-//            .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE, HmsScan.DATAMATRIX_SCAN_TYPE).create()
-//        ScanUtil.startScan(mContext as Activity?, NearbyAgentBackup.REQUEST_CODE_SCAN_ONE, options)
-
-        escanearResultado()
+        val scanBuilder: ScanOption.Builder = ScanOption.Builder()
+        scanBuilder.setPolicy(Policy.POLICY_P2P)
+        mDiscoveryEngine!!.startScan(mFileServiceId, mDiscCb, scanBuilder.build())
+        Log.d(TAG, "Start Scan.")
+        mDescText!!.text = "Connecting to $mScanInfo..."
     }
 
 
@@ -133,11 +116,7 @@ class NearbyAgent {
         val obj: HmsScan = data.getParcelableExtra(ScanUtil.RESULT)!!
         mScanInfo = obj.getOriginalValue()
         /* start scan*/
-        escanearResultado()
-    }
-
-    private fun escanearResultado() {
-        val scanBuilder: ScanOption.Builder = ScanOption.Builder()
+        val scanBuilder = ScanOption.Builder()
         scanBuilder.setPolicy(Policy.POLICY_P2P)
         mDiscoveryEngine!!.startScan(mFileServiceId, mDiscCb, scanBuilder.build())
         Log.d(TAG, "Start Scan.")
@@ -178,8 +157,13 @@ class NearbyAgent {
             endpointId: String,
             discoveryEndpointInfo: ScanEndpointInfo
         ) {
-                Log.d(TAG, "Found endpoint:" + discoveryEndpointInfo.name + ". Connecting.")
+            //if (discoveryEndpointInfo.name == mScanInfo) {
+                Log.d(
+                    TAG,
+                    "Found endpoint:" + discoveryEndpointInfo.name + ". Connecting."
+                )
                 mDiscoveryEngine!!.requestConnect(mEndpointName, endpointId, mConnCbRcver)
+            //}
         }
 
         override fun onLost(endpointId: String) {

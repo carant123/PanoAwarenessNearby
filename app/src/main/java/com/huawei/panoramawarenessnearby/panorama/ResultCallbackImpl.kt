@@ -27,17 +27,15 @@ class ResultCallbackImpl(context: Context) : ResultCallback<ImageInfoResult> {
         this.context = context
     }
 
-
     override fun onResult(result: ImageInfoResult?) {
         result?.let {
-            if (result.status.isSuccess) {
-                val intent = result.imageDisplayIntent
+            if(result.status.isSuccess) {
+                var intent = result.imageDisplayIntent
                 intent?.let {
-                    context?.startActivity(intent)
+                    context?.startActivity(it)
                 }
             }
         }
-
     }
 
 }

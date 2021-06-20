@@ -27,19 +27,28 @@
             android:text="Ambient Light Info"
             android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/bt_time"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Time Info"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bt_behavior"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Behavior Info"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/bt_ambient_light_add_barrier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ambient Light Add Barrier"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/bt_ambient_light_delete_barrier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ambient Light Delete Barrier"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

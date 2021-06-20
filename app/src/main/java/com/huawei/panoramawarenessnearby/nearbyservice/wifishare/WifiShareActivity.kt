@@ -13,16 +13,17 @@ class WifiShareActivity : BaseActivity(), View.OnClickListener {
     override fun getLayout(): Int = R.layout.activity_wifi_share
 
     override fun inicializar() {
-        initView()
-        mWiFiShare =
-            WiFiShareHelper(
-                baseContext
-            )
-        mWiFiShare?.setViewToFill(listView, authCodeText)
+        inicializarBotones()
+        inicializarWifiShareHelper()
         verificarPermisos()
     }
 
-    private fun initView() {
+    private fun inicializarWifiShareHelper() {
+        mWiFiShare = WiFiShareHelper(baseContext)
+        mWiFiShare?.setViewToFill(listView, authCodeText)
+    }
+
+    private fun inicializarBotones() {
         button_share_wifi.setOnClickListener(this)
         button_connect_wifi.setOnClickListener(this)
     }

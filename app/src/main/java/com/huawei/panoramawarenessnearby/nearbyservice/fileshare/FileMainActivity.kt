@@ -6,7 +6,8 @@ import android.content.Intent
 import android.widget.Toast
 import com.huawei.panoramawarenessnearby.BaseActivity
 import com.huawei.panoramawarenessnearby.R
-import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgent
+import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackup.REQUEST_CODE_SCAN_ONE
+import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackupK
 import com.obsez.android.lib.filechooser.ChooserDialog
 import kotlinx.android.synthetic.main.activity_file_main.*
 import java.io.File
@@ -15,6 +16,7 @@ import java.util.*
 class FileMainActivity : BaseActivity() {
 
     private val FILE_SELECT_CODE = 0
+    val REQUEST_CODE_SCAN_ONE = 0X01
     private var nearbyAgent: NearbyAgent? = null
     private var files: List<File> = ArrayList()
 
@@ -33,7 +35,7 @@ class FileMainActivity : BaseActivity() {
                 val uri = data?.data
                 nearbyAgent?.sendFile(File(uri!!.path))
             }
-            NearbyAgent.REQUEST_CODE_SCAN_ONE -> nearbyAgent?.onScanResult(data)
+            REQUEST_CODE_SCAN_ONE -> nearbyAgent?.onScanResult(data)
             else -> {
             }
         }

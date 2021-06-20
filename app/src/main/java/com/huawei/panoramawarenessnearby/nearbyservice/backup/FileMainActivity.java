@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.huawei.panoramawarenessnearby.R;
+import com.huawei.panoramawarenessnearby.nearbyservice.fileshare.NearbyAgent;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class FileMainActivity extends AppCompatActivity {
     private Button recvBtn;
     private ImageButton folderTabBtn;
     private ImageButton multiFileTabBtn;
-    private NearbyAgent nearbyAgent;
+    private NearbyAgentBackupK nearbyAgent;
     private List<File> files = new ArrayList<>();
 
 
@@ -51,7 +52,7 @@ public class FileMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_main);
 
-        nearbyAgent = new NearbyAgent(this);
+        nearbyAgent = new NearbyAgentBackupK(this);
         sendBtn = (Button)findViewById(R.id.sendBtn);
         recvBtn = (Button)findViewById(R.id.recvBtn);
 
@@ -109,7 +110,7 @@ public class FileMainActivity extends AppCompatActivity {
                     nearbyAgent.sendFile(new File(uri.getPath()));
                 }
                 break;
-            case NearbyAgent.REQUEST_CODE_SCAN_ONE:
+            case NearbyAgentBackup.REQUEST_CODE_SCAN_ONE:
                 nearbyAgent.onScanResult(data);
                 break;
             default:
