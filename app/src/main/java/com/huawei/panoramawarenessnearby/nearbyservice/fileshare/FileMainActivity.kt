@@ -6,8 +6,6 @@ import android.content.Intent
 import android.widget.Toast
 import com.huawei.panoramawarenessnearby.BaseActivity
 import com.huawei.panoramawarenessnearby.R
-import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackup.REQUEST_CODE_SCAN_ONE
-import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackupK
 import com.obsez.android.lib.filechooser.ChooserDialog
 import kotlinx.android.synthetic.main.activity_file_main.*
 import java.io.File
