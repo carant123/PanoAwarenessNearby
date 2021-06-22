@@ -109,17 +109,14 @@ class NearbyAgent {
         advBuilder.setPolicy(Policy.POLICY_P2P)
         mDiscoveryEngine!!.startBroadcasting(mEndpointName, mFileServiceId, mConnCbSender, advBuilder.build())
         Log.d(TAG, "Start Broadcasting.")
-        receiveFile()
     }
 
     fun receiveFile() {
         init()
-//        /* scan bitmap */init()
-//        val options = HmsScanAnalyzerOptions.Creator()
-//            .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE, HmsScan.DATAMATRIX_SCAN_TYPE).create()
-//        ScanUtil.startScan(mContext as Activity?, NearbyAgentBackup.REQUEST_CODE_SCAN_ONE, options)
-
-        escanearResultado()
+        /* scan bitmap */init()
+        val options = HmsScanAnalyzerOptions.Creator()
+            .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE, HmsScan.DATAMATRIX_SCAN_TYPE).create()
+        ScanUtil.startScan(mContext as Activity?, REQUEST_CODE_SCAN_ONE, options)
     }
 
 
@@ -132,10 +129,10 @@ class NearbyAgent {
         val obj: HmsScan = data.getParcelableExtra(ScanUtil.RESULT)!!
         mScanInfo = obj.getOriginalValue()
         /* start scan*/
-        escanearResultado()
+        scanResult()
     }
 
-    private fun escanearResultado() {
+    private fun scanResult() {
         val scanBuilder: ScanOption.Builder = ScanOption.Builder()
         scanBuilder.setPolicy(Policy.POLICY_P2P)
         mDiscoveryEngine!!.startScan(mFileServiceId, mDiscCb, scanBuilder.build())
