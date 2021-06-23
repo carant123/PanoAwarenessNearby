@@ -41,7 +41,39 @@ class MainPanoramaActivity : BaseActivity() {
     override fun getLayout(): Int = R.layout.activity_main
 
     override fun inicializar() {
+        verificarPermisos()
+        inicializarBotones()
+    }
 
+    private fun inicializarBotones() {
+        loadImageInfo?.setOnClickListener {
+            panoramaInterfaceLoadImageInfo()
+        }
+
+        loadImageInfoWithType.setOnClickListener {
+            panoramaInterfaceLoadImageInfoWithType()
+        }
+
+        localInterface.setOnClickListener {
+            var intent = Intent(this, LocalInterfaceActivity::class.java).apply {
+                data = returnResource(R.raw.pano)
+                putExtra("PanoramaType", PanoramaInterface.IMAGE_TYPE_RING)
+            }
+            startActivity(intent)
+        }
+
+    }
+
+    private fun panoramaInterfaceLoadImageInfoWithType() {
+        Panorama.getInstance().loadImageInfoWithPermission(this,
+            returnResource(R.raw.pano2), PanoramaInterface.IMAGE_TYPE_RING)
+            .setResultCallback(ResultCallbackImpl(this))
+
+    }
+
+    private fun panoramaInterfaceLoadImageInfo() {
+        Panorama.getInstance().loadImageInfoWithPermission(this, returnResource(R.raw.pano))
+            .setResultCallback(ResultCallbackImpl(this))
     }
 
     private fun returnResource(drawable: Int): Uri {
