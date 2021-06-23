@@ -32,7 +32,7 @@ class LightBarrierReceiver : BroadcastReceiver() {
                     Log.i(TAG, "$label status:unknown")
                 }
             }
-            MainAwarenessActivity.activityIdent.mostrarMensajeBroadCast(mensaje)
+
         }
     }
 }
