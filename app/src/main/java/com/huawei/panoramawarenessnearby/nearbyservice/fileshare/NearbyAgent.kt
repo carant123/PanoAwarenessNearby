@@ -27,7 +27,6 @@ import com.huawei.hms.nearby.transfer.DataCallback
 import com.huawei.hms.nearby.transfer.TransferEngine
 import com.huawei.hms.nearby.transfer.TransferStateUpdate
 import com.huawei.panoramawarenessnearby.R
-import com.huawei.panoramawarenessnearby.nearbyservice.backup.NearbyAgentBackup
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat

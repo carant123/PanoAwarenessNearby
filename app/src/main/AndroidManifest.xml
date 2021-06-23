@@ -45,15 +45,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".nearbyservice.backup.FileMainActivity" >
-
-        </activity>
-
-        <activity android:name=".nearbyservice.backup.FolderMainActivity" >
-
-        </activity>
-
-        <activity android:name=".nearbyservice.backup.MultiFileMainActivity" >
+        <activity android:name=".nearbyservice.nearby.NearbyActivity" >
 
         </activity>
 
